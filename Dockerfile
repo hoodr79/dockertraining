@@ -1,35 +1,31 @@
 FROM ubuntu:latest
-
-#maintainer is deprecated thats why label is used
-LABEL maintainer="salmaan.iitkgp@gmail.com"
+LABEL MAINTAINER="salmaan.iitkgp@gmail.com"
 
 
-#m makes new directory, s opens the default shell
-RUN useradd -ms /bin/bash salmaan
 
-#switches to new user
+
+#why is r there
+RUN mkdir -p /home/BAN/var/logs \
+    && groupadd -g 100054 -r BAN \
+    && useradd salmaan -u 100054 -r -g BAN -d /home/BAN \
+    && chmod 755 /home/BAN/var/logs \
+    && chown salmaan:BAN /home/BAN/var/logs
+
+WORKDIR /home/BAN
+
+RUN apt-get update
+
+RUN apt-get install -y nginx
+
+RUN apt-get install -y systemctl
+
+
+
+
+
+
+
+
+CMD ["/usr/sbin/nginx", "-g", "daemon off;"]
 USER salmaan
-
-ADD https://github.com/springframeworkguru/springbootwebapp.git /home/salmaan
-
-CMD echo "Hello salmaan"
-CMD ps
-#working directory 
-WORKDIR /home/salmaan
-
-
-COPY ./hello.txt /home/salmaan/
-
-ENV MY_NAME="John Doe"
-ENV MY_DOG=Rex\ The\ Dog
-ENV MY_CAT=fluffy
-
-ARG DEBIAN_FRONTEND=noninteractive
-
-#this is just for comminucating to the developer, to expose the port during run command port is specified using p
-EXPOSE 22
-
-
-
-
-
+EXPOSE 768
